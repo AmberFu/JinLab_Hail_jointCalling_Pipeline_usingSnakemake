@@ -5,6 +5,8 @@ Follow [snakemake - Best practices](https://snakemake.readthedocs.io/en/stable/s
 
 ### Cluster setting
 
+> Updated `cluster.json`: https://github.com/AmberFu/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/blob/main/config/cluster.json
+
 ```json
 {
     "__default__" :
@@ -19,17 +21,22 @@ Follow [snakemake - Best practices](https://snakemake.readthedocs.io/en/stable/s
         "jobgroup": "/fup/jobGroup_50_snakemake"
     },
     "gvcf2gvcfbgz" : {
+        "core" : 6,
         "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
         "log" : "logs/gvcf2gvcfbgz_out.txt",
         "err" : "logs/gvcf2gvcfbgz_err.txt"
     },
     "generate_tabix" : {
+        "core" : 6,
         "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
         "log" : "logs/generate_tabix_out.txt",
         "err" : "logs/generate_tabix_err.txt"
     },
     "hail_run_combiner" : {
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "core" : 32,
+        "mem" : "256GB",
+        "resources" : "\"rusage[mem=256GB]\"",
+        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",                                                                                 
         "log" : "logs/hail_run_combiner_out.txt",
         "err" : "logs/hail_run_combiner_err.txt"
     }
