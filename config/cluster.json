@@ -11,152 +11,23 @@
         "jobgroup": "/fup/jobGroup_50_snakemake"
     },
     "gvcf2gvcfbgz" : {
+        "core" : 6,
         "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
         "log" : "logs/gvcf2gvcfbgz_out.txt",
         "err" : "logs/gvcf2gvcfbgz_err.txt"
     },
     "generate_tabix" : {
+        "core" : 6,
         "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
         "log" : "logs/generate_tabix_out.txt",
         "err" : "logs/generate_tabix_err.txt"
     },
     "hail_run_combiner" : {
+        "core" : 32,
+        "mem" : "256GB",
+        "resources" : "\"rusage[mem=256GB]\"",
         "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
         "log" : "logs/hail_run_combiner_out.txt",
         "err" : "logs/hail_run_combiner_err.txt"
-    },
-    "bam2cram" :
-    {
-        "core" : 8,
-        "mem" : "48GB",
-        "resources" : "\"rusage[mem=48GB] span[hosts=1]\"",
-        "log" : "logs/bam2cram_out.txt",
-        "err" : "logs/bam2cram_err.txt"
-    },
-    "index_cram" :
-    {
-        "core" : 8,
-        "mem" : "24GB",
-        "resources" : "\"rusage[mem=24GB] span[hosts=1]\"",
-        "log" : "logs/index_cram_out.txt",
-        "err" : "logs/index_cram_err.txt"
-    },
-    "delete_bam" :
-    {
-         "log" : "logs/delete_bam_out.txt",
-         "err" : "logs/delete_bam_err.txt"
-    },
-    "KnightBamMetrics":
-    {
-        "mem" : "12GB",
-        "resources" : "\"rusage[mem=12GB]\"",
-        "log" : "logs/KnightBamMetrics_out.txt",
-        "err" : "logs/KnightBamMetrics_err.txt"
-    },
-    "combinedBamMetrics" :
-    {
-        "log" : "logs/combinedBamMetrics_out.txt",
-        "err" : "logs/combinedBamMetrics_err.txt"
-    },
-    "md5CRAM" :
-    {
-        "log" : "logs/md5CRAM_out.txt",
-        "err" : "logs/md5CRAM_err.txt"
-    },
-    "md5ChromGVCF" :
-    {
-        "log" : "logs/md5ChromGVCF_out.txt",
-        "err" : "logs/md5ChromGVCF_err.txt"
-    },
-    "verify_bam2" :
-    {
-        "core" : 5,
-        "mem" : "16GB",
-        "resources" : "\"rusage[mem=16GB] span[hosts=1]\"",
-        "image" : "spashleyfu/ubuntu20_snakemake:verifyBamID2",
-        "log" : "logs/verify_bam2_out.txt",
-        "err" : "logs/verify_bam2_err.txt"
-    },
-    "verify_bam" :
-    {
-        "core" : 5,
-        "mem" : "16GB",
-        "resources" : "\"rusage[mem=16GB] span[hosts=1]\"",
-        "log" : "logs/verify_bam_out.txt",
-        "err" : "logs/verify_bam_err.txt"
-    },
-    "subsetGvcf" :
-    {
-        "core" : 10,
-        "log" : "logs/subsetGvcf_out.txt",
-        "err" : "logs/subsetGvcf_err.txt"
-    },
-    "pb_germline" :
-    {
-        "core" : 24,
-        "mem" : "256GB",
-        "resources" : "\"rusage[mem=256GB] span[hosts=1]\"",
-        "image" : "spashleyfu/parabricksv35_snakemake:latest",
-        "gpu" : "\"num=2:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes\"",
-        "log" : "logs/pb_germline_out.txt",
-        "err" : "logs/pb_germline_err.txt",
-        "jobgroup": "/fup/jobGroup_2_parabricks"
-    },
-    "pb_glnexus" :
-    {
-        "core" : 24,
-        "mem" : "256GB",
-        "resources" : "\"rusage[mem=256GB] span[hosts=1]\"",
-        "image" : "spashleyfu/parabricksv35_snakemake:latest",
-        "gpu" : "\"num=2:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes\"",
-        "log" : "logs/pb_glnexus_out.txt",
-        "err" : "logs/pb_glnexus_err.txt",
-        "jobgroup": "/fup/jobGroup_2_parabricks"
-    },
-    "mvCramTar2Archive" : 
-    {
-        "log" : "logs/mvCramTar2Archive_out.txt",
-        "err" : "logs/mvCramTar2Archive_err.txt",
-        "image" : "spashleyfu/globus_cli_wustl:snakemake"
-    },
-    "mvGVCFtar2Archive" : 
-    {
-        "log" : "logs/mvGVCFtar2Archive_out.txt",
-        "err" : "logs/mvGVCFtar2Archive_err.txt",
-        "image" : "spashleyfu/globus_cli_wustl:snakemake"
-    },
-    "kinship_plink2" :
-    {
-        "mem" : "15GB",
-        "resources" : "\"rusage[mem=15GB]\"",
-        "log" : "logs/kinship_plink2_out.txt",
-        "err" : "logs/kinship_plink2_err.txt"
-    },
-    "bcftools_concat_bcf" :
-    {
-        "core" : 4,
-        "log" : "logs/bcftools_concat_bcf_out.txt",
-        "err" : "logs/bcftools_concat_bcf_err.txt"
-    },
-    "bcftools_concat_vcf" :
-    {
-        "core" : 4,
-        "log" : "logs/bcftools_concat_vcf_out.txt",
-        "err" : "logs/bcftools_concat_vcf_err.txt"
-    },
-    "sex_check_plink_step1" : 
-    {
-        "mem" : "15GB",
-        "resources" : "\"rusage[mem=15GB]\""
-    },
-    "sex_check_plink_step2" : 
-    {
-        "mem" : "15GB",
-        "resources" : "\"rusage[mem=15GB]\""
-    },
-    "sex_check_plink_step3" : 
-    {
-        "mem" : "15GB",
-        "resources" : "\"rusage[mem=15GB]\""
     }
 }
