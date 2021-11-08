@@ -109,7 +109,7 @@ rule generate_tabix:
     shell: "tabix -p vcf -f {input}"
 ```
 
-[back to outline](#outline)
+[[back to outline]](#outline)
 
 Snakemake Rule for Hail Joint-Calling: `workflow/rules/hail_jointcall.smk`
 
@@ -178,7 +178,7 @@ processing_time_in_seconds = time.time() - start_time
 print("--- %s minute ---" % (processing_time_in_seconds/60))
 ```
 
-[back to outline](#outline)
+[[back to outline]](#outline)
 
 
 #### How to BGZ a GVCF file and TABIX the file
@@ -253,7 +253,7 @@ real	0m34.631s
 user	0m28.649s
 sys	0m0.281s
 ```
-[back to outline](#outline)
+[[back to outline]](#outline)
 
 #### How to run Hail Joint-Calling using BASH and BSUB
 
@@ -278,7 +278,7 @@ export JAVA_HOME=/opt/conda
 time python /storage1/fs1/jin810/Active/fup/test_pyspark_02/test_hail_jointCalling.py
 ```
 
-[back to outline](#outline)
+[[back to outline]](#outline)
 
 Hail PYTHON SCRIPT: `/storage1/fs1/jin810/Active/fup/test_pyspark_02/test_hail_jointCalling.py`
 
@@ -331,4 +331,4 @@ processing_time_in_seconds = time.time() - start_time
 print("--- %s minute ---" % (processing_time_in_seconds/60))
 ```
 
-[back to outline](#outline)
+[[back to outline]](#outline)
