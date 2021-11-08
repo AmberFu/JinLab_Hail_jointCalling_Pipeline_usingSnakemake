@@ -2,3 +2,5 @@
 *.pdf
 *.html
 .snakemake
+workflow/rules/*.bk
+config/*.bk
