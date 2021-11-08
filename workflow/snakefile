@@ -1,0 +1,62 @@
+'''
+Po-Ying Fu
+2021/11/04 Created
+
+This Sankemake file is for runing Hail run_combiner() from Parabricks Germline pipeline output (GVCF).
+
+Requirement:
+* Docker: spashleyfu/ubuntu18_vep104:hail_gsutil
+* GVCF or Splited-GVCF as input
+
+Detail Steps:
+1. GVCF to GVCF.BGZ and create tbi file
+   (If it's splited GVCF, need to finished all of BGZIP before moving to step2)
+2. Joint call GVCF.BGZ (by chromosome)
+
+PLAN TO DO:
+* Checkpoint: https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html?highlight=Checkpoint#data-dependent-conditional-execution
+* Unit tests: https://snakemake.readthedocs.io/en/stable/snakefiles/testing.html#snakefiles-testing
+* Validation: https://snakemake.readthedocs.io/en/stable/snakefiles/configuration.html?highlight=schema#validation
+* snakemake-github-action: https://github.com/snakemake/snakemake-github-action
+
+'''
+# Configure Working Directory:
+# workdir: "path/to/workdir"
+
+# Standard Configuration:
+configfile: "config/config.yaml"
+
+##### REF used in this pipeline #####
+
+
+##### Modules #####
+include: "rules/common.smk"
+include: "rules/bgzip_tabix.smk"
+include: "rules/hail_jointcall.smk"
+
+### GET SAMPLEs path from file
+# Declare in workflow/rules/common.smk
+#print(SAMPLES)
+#print("--------------")
+#print(INTERVALS)
+
+
+##### Target rules #####
+# https://snakemake.readthedocs.io/en/stable/tutorial/basics.html#step-7-adding-a-target-rule
+rule all:
+    input:
+        ### test output
+        #expand(config['project_outdir'] + "/logs/flag_chr{interval}.exist", interval=INTERVALS),
+        ### GVCF to GVCF.BGZ then run tabix
+        expand(config['subset_gvcf_dir'] + "/chr{interval}/{sample}_{interval}_germline.g.vcf.bgz.tbi", sample=SAMPLES, interval=INTERVALS),
+        ### Hail run_combiner()
+        expand(config['project_outdir'] + "/Neuropathy_batch1_chr{interval}_runCombiner.mt", interval=INTERVALS),
+
+##### TEST Block #####
+rule test_output:
+    input:
+        gvcf_tbi = expand(config['subset_gvcf_dir'] + "/chr{{interval}}/{sample}_{{interval}}_germline.g.vcf.bgz.tbi", sample=SAMPLES),
+        mt = config['project_outdir'] + "/Neuropathy_batch1_chr{interval}_runCombiner.mt"
+    output: config['project_outdir'] + "/logs/flag_chr{interval}.exist"
+    shell: "touch {output}"
+

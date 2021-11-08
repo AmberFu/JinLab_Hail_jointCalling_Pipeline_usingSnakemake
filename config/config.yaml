@@ -1,0 +1,59 @@
+##### Hail Joint-Calling PATH and RULE resource setting #####
+##### EDIT this block #####
+projectName: Neuropathy_Hail_runCombiner
+samples: config/samples.tsv
+interval: config/interval.txt
+# Neuropathy_WGS_2021May: (batch1, total 366 samples)
+subset_gvcf_dir: /storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/snakemake_results/subsetGvcf
+project_outdir: /storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/hail_runCombiner_result
+
+########################################################################################
+# REF:
+hg38bga: /storage1/fs1/bga/Active/gmsroot/gc2560/core/model_data/2887491634/build21f22873ebe0486c8e6f69c15435aa96/all_sequences.fa
+hg38ref: /scratch1/fs1/jin810/references/gms_hg38_model2887491634_build21f22873ebe0486c8e6f69c15435aa96/all_sequences.fa
+hg19: /storage1/fs1/jin810/Active/references/Homo_sapiens_assembly19.fasta
+# liftover:
+liftoverChainFile_hg38to19: /storage1/fs1/jin810/Active/references/UCSC_chain_file/hg38ToHg19.over.chain.gz
+# VerifyBamID2:
+SVDPrefix: /storage1/fs1/jin810/Active/references/VerifyBamID2_ref/1000g.phase3.100k.b38.vcf.gz.dat
+# KNOWN_SITE:
+vcf:
+    gms:
+        omni_vcf: /storage1/fs1/bga/Active/gmsroot/gc2709/info/production_reference_GRCh38DH/accessory_vcf/omni25-ld-pruned-20000-2000-0.5-annotated.wchr.sites_only.b38.autosomes_only.vcf.gz
+        dbsnp_vcf: /storage1/fs1/bga/Active/gmsroot/gc2560/core/build_merged_alignments/detect-variants--linus2112.gsc.wustl.edu-jwalker-19443-e48c595a620a432c93e8dd29e4af64f2/snvs.hq.vcf.gz
+        known_indels: /storage1/fs1/bga/Active/gmsroot/gc2560/core/build_merged_alignments/detect-variants--linus2112.gsc.wustl.edu-jwalker-20267-00cb8ff552914c17ad66d86031e10d30/indels.hq.vcf.gz
+        mills: /storage1/fs1/bga/Active/gmsroot/gc2560/core/build_merged_alignments/detect-variants--linus2112.gsc.wustl.edu-jwalker-20211-26b393cc7ab04120ac68cc2cbd4a15df/indels.hq.vcf.gz
+    storage1:
+        dbsnp_vcf: /storage1/fs1/jin810/Active/known_sites/resources-broad-hg38-v0-Homo_sapiens_assembly38.dbsnp138.vcf
+        omni_vcf: /storage1/fs1/jin810/Active/known_sites/1000G_omni2.5.hg38.vcf
+        onekgsnp_vcf: /storage1/fs1/jin810/Active/known_sites/1000G_phase1.snps.high_confidence.hg38.vcf
+        hapmap_vcf: /storage1/fs1/jin810/Active/known_sites/hapmap_3.3.hg38.vcf
+        ks19443dbsnp: /storage1/fs1/jin810/Active/known_sites/BGA_KNOWNSITE_19443_dbsnp_snvs.hq.vcf.gz
+        ks20211mills: /storage1/fs1/jin810/Active/known_sites/BGA_KNOWNSITE_20211_mills_indels.hq.vcf.gz
+        ks20267indel: /storage1/fs1/jin810/Active/known_sites/BGA_KNOWNSITE_20267_known_indels.hq.vcf.gz
+    scratch1:
+        dbsnp_vcf: /scratch1/fs1/jin810/known_sites/resources-broad-hg38-v0-Homo_sapiens_assembly38.dbsnp138.vcf
+        onekgsnp_vcf: /scratch1/fs1/jin810/known_sites/1000G_phase1.snps.high_confidence.hg38.vcf
+        hapmap_vcf: /scratch1/fs1/jin810/known_sites/hapmap_3.3.hg38.vcf
+        omni_vcf: /scratch1/fs1/jin810/known_sites/1000G_omni2.5.hg38.vcf
+        ks19443dbsnp: /scratch1/fs1/jin810/known_sites/KNOWNSITE_19443_snvs.hq.vcf.gz
+        ks20211mills: /scratch1/fs1/jin810/known_sites/KNOWNSITE_20211_indels.hq.vcf.gz
+        ks20267indel: /scratch1/fs1/jin810/known_sites/KNOWNSITE_20267_indels.hq.vcf.gz
+
+# others:
+platform: "ILLUMINA"
+gpuModel: "nvidia-tesla-v100"
+########################################################################################
+# Pipeline Var:
+gvcf2gvcfbgz:
+    threads: 6
+    mem_mb: 8192
+
+generate_tabix:
+    threads: 6
+    mem_mb: 8192
+
+hail_run_combiner:
+    threads: 32
+    mem_mb: 262144
+    spark_mem: "10g"
