@@ -86,22 +86,31 @@ snakemake --use-conda -j 30 --show-failed-logs \
 > --cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 > -s $PWD/workflow/snakefile
 Job <949643> is submitted to queue <general>.
+
+// snakemake dry run result:
+Job counts:
+	count	jobs
+	1	all
+	366	generate_tabix
+	366	gvcf2gvcfbgz
+	1	hail_run_combiner
+	734
 ```
 
 Snakemake Rule for BGZIP VCF and create TABIX for VCF: `workflow/rules/bgzip_tabix.smk`
 
 ```python
 rule gvcf2gvcfbgz:
-    input: expand(config['subset_gvcf_dir'] + "/chr{{interval}}/{sample}_{{interval}}_germline.g.vcf", sample=SAMPLES)
-    output: expand(config['subset_gvcf_dir'] + "/chr{{interval}}/{sample}_{{interval}}_germline.g.vcf.bgz", sample=SAMPLES)
+    input: config['subset_gvcf_dir'] + "/chr{interval}/{sample}_{interval}_germline.g.vcf"
+    output: config['subset_gvcf_dir'] + "/chr{interval}/{sample}_{interval}_germline.g.vcf.bgz"
     threads: config['gvcf2gvcfbgz']['threads']
     resources:
         mem_mb = config['gvcf2gvcfbgz']['mem_mb']
     shell: "bgzip --threads {threads} -c {input} > {output}"
 
 rule generate_tabix:
-    input: expand(config['subset_gvcf_dir'] + "/chr{{interval}}/{sample}_{{interval}}_germline.g.vcf.bgz", sample=SAMPLES)
-    output: expand(config['subset_gvcf_dir'] + "/chr{{interval}}/{sample}_{{interval}}_germline.g.vcf.bgz.tbi", sample=SAMPLES)
+    input: config['subset_gvcf_dir'] + "/chr{interval}/{sample}_{interval}_germline.g.vcf.bgz"
+    output: config['subset_gvcf_dir'] + "/chr{interval}/{sample}_{interval}_germline.g.vcf.bgz.tbi"
     threads: config['generate_tabix']['threads']
     resources:
         mem_mb = config['generate_tabix']['mem_mb']
