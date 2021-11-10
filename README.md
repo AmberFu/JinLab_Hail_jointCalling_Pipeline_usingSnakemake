@@ -15,7 +15,7 @@ bsub -q general -G compute-jin810 \
 snakemake --use-conda -j 30 --show-failed-logs \
 --keep-going --printshellcmds \
 --cluster-config $PWD/config/cluster.json \
---cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -gpu {cluster.gpu} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+--cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 -s $PWD/workflow/snakefile
 ```
 
