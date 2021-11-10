@@ -37,21 +37,21 @@ snakemake --use-conda -j 30 --show-failed-logs \
     },
     "gvcf2gvcfbgz" : {
         "core" : 6,
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "image" : "spashleyfu/ubuntu20_snakemake:samtools",
         "log" : "logs/gvcf2gvcfbgz_out.txt",
         "err" : "logs/gvcf2gvcfbgz_err.txt"
     },
     "generate_tabix" : {
         "core" : 6,
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "image" : "spashleyfu/ubuntu20_snakemake:samtools",
         "log" : "logs/generate_tabix_out.txt",
         "err" : "logs/generate_tabix_err.txt"
     },
     "hail_run_combiner" : {
         "core" : 32,
-        "mem" : "256GB",
-        "resources" : "\"rusage[mem=256GB]\"",
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",                                                                                 
+        "mem" : "128GB",
+        "resources" : "\"rusage[mem=128GB]\"",
+        "image" : "spashleyfu/ubuntu20_snakemake:samtools",                                                                                 
         "log" : "logs/hail_run_combiner_out.txt",
         "err" : "logs/hail_run_combiner_err.txt"
     }
@@ -69,9 +69,9 @@ snakemake --use-conda -j 30 --show-failed-logs \
 
 #### Test submit jobs for chr1
 
-> Date: 2021/11/08
+> Date: 2021/11/10
 > 
-> PID: 945991
+> PID: 948156
 
 ```
 [fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
@@ -85,12 +85,7 @@ snakemake --use-conda -j 30 --show-failed-logs \
 > --cluster-config $PWD/config/cluster.json \
 > --cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 > -s $PWD/workflow/snakefile
-Job <945991> is submitted to queue <general>.
-
-[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bjobs
-JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
-945991  fup     RUN   general    compute1-cl compute1-ex *jointcall Nov 10 13:28
-945993  fup     RUN   general    compute1-ex 6*compute1- *fbgz.2.sh Nov 10 13:29
+Job <948156> is submitted to queue <general>.
 ```
 
 Snakemake Rule for BGZIP VCF and create TABIX for VCF: `workflow/rules/bgzip_tabix.smk`
