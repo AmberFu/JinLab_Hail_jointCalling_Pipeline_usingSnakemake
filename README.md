@@ -71,7 +71,7 @@ snakemake --use-conda -j 30 --show-failed-logs \
 
 > Date: 2021/11/10
 > 
-> PID: 949639
+> PID: 949643
 
 ```
 [fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
@@ -85,7 +85,7 @@ snakemake --use-conda -j 30 --show-failed-logs \
 > --cluster-config $PWD/config/cluster.json \
 > --cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 > -s $PWD/workflow/snakefile
-Job <949639> is submitted to queue <general>.
+Job <949643> is submitted to queue <general>.
 ```
 
 Snakemake Rule for BGZIP VCF and create TABIX for VCF: `workflow/rules/bgzip_tabix.smk`
