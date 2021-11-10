@@ -29,9 +29,8 @@ snakemake --use-conda -j 30 --show-failed-logs \
     {
         "core" : 2,
         "mem" : "10GB",
-        "resources" : "\"rusage[mem=10GB] span[hosts=1]\"",
+        "resources" : "\"rusage[mem=10GB]\"",
         "image" : "spashleyfu/ubuntu20_snakemake:bamMetrics",
-        "gpu" : "\"\"",
         "log" : "logs/out.txt",
         "err" : "logs/err.txt",
         "jobgroup": "/fup/jobGroup_50_snakemake"
@@ -72,7 +71,7 @@ snakemake --use-conda -j 30 --show-failed-logs \
 
 > Date: 2021/11/08
 > 
-> PID: 888543
+> PID: 945991
 
 ```
 [fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
@@ -84,9 +83,14 @@ snakemake --use-conda -j 30 --show-failed-logs \
 > snakemake --use-conda -j 30 --show-failed-logs \
 > --keep-going --printshellcmds \
 > --cluster-config $PWD/config/cluster.json \
-> --cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -gpu {cluster.gpu} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+> --cluster "bsub -q general -G compute-jin810 -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 > -s $PWD/workflow/snakefile
-Job <888543> is submitted to queue <general>.
+Job <945991> is submitted to queue <general>.
+
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bjobs
+JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+945991  fup     RUN   general    compute1-cl compute1-ex *jointcall Nov 10 13:28
+945993  fup     RUN   general    compute1-ex 6*compute1- *fbgz.2.sh Nov 10 13:29
 ```
 
 Snakemake Rule for BGZIP VCF and create TABIX for VCF: `workflow/rules/bgzip_tabix.smk`
