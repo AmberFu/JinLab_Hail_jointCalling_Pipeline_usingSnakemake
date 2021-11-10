@@ -51,7 +51,7 @@ snakemake --use-conda -j 30 --show-failed-logs \
         "core" : 32,
         "mem" : "128GB",
         "resources" : "\"rusage[mem=128GB]\"",
-        "image" : "spashleyfu/ubuntu20_snakemake:samtools",                                                                                 
+        "image" : "spashleyfu/ubuntu18_vep104:hail_snakemake",                                                                                 
         "log" : "logs/hail_run_combiner_out.txt",
         "err" : "logs/hail_run_combiner_err.txt"
     }
