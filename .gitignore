@@ -4,3 +4,4 @@
 .snakemake
 workflow/rules/*.bk
 config/*.bk
+logs/*
