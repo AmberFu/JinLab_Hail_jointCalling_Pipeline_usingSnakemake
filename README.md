@@ -63,9 +63,45 @@ snakemake --use-conda -j 50 \
 
 #### Outline:
 
+* [Submit ALL chromosome](#Submit-ALL-chromosome)
 * [Test submit jobs for chr1](#test-submit-jobs-for-chr1)
 * [How to BGZ a GVCF file and TABIX the file](#how-to-bgz-a-gvcf-file-and-tabix-the-file)
 * [How to run Hail Joint-Calling using BASH and BSUB](#how-to-run-hail-joint-calling-using-bash-and-bsub)
+
+
+#### Submit ALL chromosome:
+
+> Date: 021/11/10
+> 
+> PID: 951945
+
+```
+// dry run
+(base) fup@compute1-exec-135:/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake$ snakemake -n
+...
+Job counts:
+	count	jobs
+	1	all
+	8419	generate_tabix
+	8418	gvcf2gvcfbgz
+	24	hail_run_combiner
+	16862
+
+
+// SUBMIT
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
+> -J hail_jointcall -N -u fup@wustl.edu \
+> -R 'affinity[core(5)] span[ptile=6] rusage[mem=25GB]' \
+> -oo master_out.txt -eo master_err.txt \
+> -g /fup/jobGroup_2_snakemake \
+> -a 'docker(spashleyfu/ubuntu20_snakemake:bamMetrics)' \
+> snakemake --use-conda -j 50 \
+> --printshellcmds --show-failed-logs \
+> --cluster-config $PWD/config/cluster.json \
+> --cluster "bsub -q general -G compute-jin810 -Ne -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+> -s $PWD/workflow/snakefile
+Job <951945> is submitted to queue <general>.
+```
 
 #### Test submit jobs for chr1
 
