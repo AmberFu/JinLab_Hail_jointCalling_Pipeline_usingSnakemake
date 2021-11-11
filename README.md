@@ -9,11 +9,11 @@ Follow [snakemake - Best practices](https://snakemake.readthedocs.io/en/stable/s
 bsub -q general -G compute-jin810 \
 -J hail_jointcall -N -u fup@wustl.edu \
 -R 'affinity[core(5)] span[ptile=6] rusage[mem=25GB]' \
--oo out.txt -eo err.txt \
+-oo master_out.txt -eo master_err.txt \
 -g /fup/jobGroup_2_snakemake \
 -a 'docker(spashleyfu/ubuntu20_snakemake:bamMetrics)' \
-snakemake --use-conda -j 30 --show-failed-logs \
---keep-going --printshellcmds \
+snakemake --use-conda -j 50 \
+--printshellcmds --show-failed-logs \
 --cluster-config $PWD/config/cluster.json \
 --cluster "bsub -q general -G compute-jin810 -Ne -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
 -s $PWD/workflow/snakefile
