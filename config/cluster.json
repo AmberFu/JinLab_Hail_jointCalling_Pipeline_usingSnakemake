@@ -3,30 +3,29 @@
     {
         "core" : 2,
         "mem" : "10GB",
-        "resources" : "\"rusage[mem=10GB] span[hosts=1]\"",
+        "resources" : "\"rusage[mem=10GB]\"",
         "image" : "spashleyfu/ubuntu20_snakemake:bamMetrics",
-        "gpu" : "\"\"",
         "log" : "logs/out.txt",
         "err" : "logs/err.txt",
         "jobgroup": "/fup/jobGroup_50_snakemake"
     },
     "gvcf2gvcfbgz" : {
         "core" : 6,
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "image" : "spashleyfu/ubuntu20_snakemake:samtools",
         "log" : "logs/gvcf2gvcfbgz_out.txt",
         "err" : "logs/gvcf2gvcfbgz_err.txt"
     },
     "generate_tabix" : {
         "core" : 6,
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "image" : "spashleyfu/ubuntu20_snakemake:samtools",
         "log" : "logs/generate_tabix_out.txt",
         "err" : "logs/generate_tabix_err.txt"
     },
     "hail_run_combiner" : {
         "core" : 32,
-        "mem" : "256GB",
-        "resources" : "\"rusage[mem=256GB]\"",
-        "image" : "spashleyfu/ubuntu18_vep104:hail_gsutil",
+        "mem" : "128GB",
+        "resources" : "\"rusage[mem=128GB]\"",
+        "image" : "spashleyfu/ubuntu18_vep104:hail_snakemake",
         "log" : "logs/hail_run_combiner_out.txt",
         "err" : "logs/hail_run_combiner_err.txt"
     }
