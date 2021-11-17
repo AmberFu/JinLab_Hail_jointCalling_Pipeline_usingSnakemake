@@ -103,6 +103,44 @@ Job counts:
 Job <951945> is submitted to queue <general>.
 ```
 
+#### check result - failed at "hail_run_combiner" step
+
+```
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ for i in {1..22}; do bgz=$(ls ../snakemake_results/subsetGvcf/chr$i/TWHJ-PNRR-10*.bgz | wc -l);tbi=$(ls ../snakemake_results/subsetGvcf/chr$i/TWHJ-PNRR-10*.bgz.tbi | wc -l); echo "chr$i has $bgz BGZ recodes, and $tbi TBI recodes"; done
+chr1 has 366 BGZ recodes, and 366 TBI recodes
+chr2 has 366 BGZ recodes, and 366 TBI recodes
+chr3 has 366 BGZ recodes, and 366 TBI recodes
+chr4 has 366 BGZ recodes, and 366 TBI recodes
+chr5 has 366 BGZ recodes, and 366 TBI recodes
+chr6 has 366 BGZ recodes, and 366 TBI recodes
+chr7 has 366 BGZ recodes, and 366 TBI recodes
+chr8 has 366 BGZ recodes, and 366 TBI recodes
+chr9 has 366 BGZ recodes, and 366 TBI recodes
+chr10 has 366 BGZ recodes, and 366 TBI recodes
+chr11 has 366 BGZ recodes, and 366 TBI recodes
+chr12 has 366 BGZ recodes, and 366 TBI recodes
+chr13 has 366 BGZ recodes, and 366 TBI recodes
+chr14 has 366 BGZ recodes, and 366 TBI recodes
+chr15 has 366 BGZ recodes, and 366 TBI recodes
+chr16 has 366 BGZ recodes, and 366 TBI recodes
+chr17 has 366 BGZ recodes, and 366 TBI recodes
+chr18 has 366 BGZ recodes, and 366 TBI recodes
+chr19 has 366 BGZ recodes, and 366 TBI recodes
+chr20 has 366 BGZ recodes, and 366 TBI recodes
+chr21 has 366 BGZ recodes, and 366 TBI recodes
+chr22 has 366 BGZ recodes, and 366 TBI recodes
+
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrX/TWHJ-PNRR-10*.bgz | wc -l
+366
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrX/TWHJ-PNRR-10*.bgz.tbi | wc -l
+366
+
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrY/TWHJ-PNRR-10*.bgz | wc -l
+366
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrY/TWHJ-PNRR-10*.bgz.tbi | wc -l
+366
+```
+
 #### Test submit jobs for chr1
 
 > Date: 2021/11/10
