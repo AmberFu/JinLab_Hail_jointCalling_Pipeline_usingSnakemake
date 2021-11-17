@@ -5,6 +5,11 @@ import hail as hl
 
 start_time = time.time()
 
+# Set JAVA HOME
+os.environ['JAVA_HOME'] = "/opt/conda"
+os.environ['SPARK_HOME'] = "/opt/conda/lib/python3.7/site-packages/pyspark"
+os.environ['HAIL_HOME'] = "/opt/conda/lib/python3.7/site-packages/hail"
+
 threads = snakemake.threads - 2
 memory = snakemake.params.spark_mem
 hail_jars = "/opt/conda/lib/python3.7/site-packages/hail/backend/hail-all-spark.jar"

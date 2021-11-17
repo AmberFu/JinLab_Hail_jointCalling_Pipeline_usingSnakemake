@@ -1,6 +1,7 @@
 *.txt
 *.pdf
 *.html
+*.log
 .snakemake
 workflow/rules/*.bk
 config/*.bk
