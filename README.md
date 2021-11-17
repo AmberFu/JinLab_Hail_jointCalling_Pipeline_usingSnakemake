@@ -139,6 +139,9 @@ chr22 has 366 BGZ recodes, and 366 TBI recodes
 366
 [fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrY/TWHJ-PNRR-10*.bgz.tbi | wc -l
 366
+
+// check dry run again:
+
 ```
 
 #### Test submit jobs for chr1
