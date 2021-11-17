@@ -58,20 +58,37 @@ snakemake --use-conda -j 50 \
 }
 ```
 
+--------------------------------------
 
 ### Detail:
 
 #### Outline:
 
-* [Submit ALL chromosome](#Submit-ALL-chromosome)
+* [Submit ALL hail_run_combiner - 2nd](#Submit-ALL-hail_run_combiner)
+* [Submit ALL chromosome - 1st fail at hail_run_combiner](#Submit-ALL-chromosome)
 * [Test submit jobs for chr1](#test-submit-jobs-for-chr1)
 * [How to BGZ a GVCF file and TABIX the file](#how-to-bgz-a-gvcf-file-and-tabix-the-file)
 * [How to run Hail Joint-Calling using BASH and BSUB](#how-to-run-hail-joint-calling-using-bash-and-bsub)
 
+#### Submit ALL hail_run_combiner:
+
+> 2nd
+> 
+> Date: 2021/11/17
+> 
+> PID:
+
+```
+
+
+```
+
 
 #### Submit ALL chromosome:
 
-> Date: 021/11/10
+> 1st
+> 
+> Date: 2021/11/10
 > 
 > PID: 951945
 
@@ -141,6 +158,11 @@ chr22 has 366 BGZ recodes, and 366 TBI recodes
 366
 
 // check dry run again:
+Job counts:
+	count	jobs
+	1	all
+	24	hail_run_combiner
+	25
 
 ```
 
