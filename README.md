@@ -76,11 +76,80 @@ snakemake --use-conda -j 50 \
 > 
 > Date: 2021/11/17
 > 
-> PID:
+> PID: 221719
+
+* Sent out jobs:
+
+NEED to run at `/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake` folder.
 
 ```
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
+> -J hail_jointcall -N -u fup@wustl.edu \
+> -R 'affinity[core(5)] span[ptile=6] rusage[mem=25GB]' \
+> -oo master_out.txt -eo master_err.txt \
+> -g /fup/jobGroup_2_snakemake \
+> -a 'docker(spashleyfu/ubuntu20_snakemake:bamMetrics)' \
+> snakemake --use-conda -j 10 \
+> --printshellcmds --show-failed-logs \
+> --cluster-config $PWD/config/cluster.json \
+> --cluster "bsub -q general -G compute-jin810 -Ne -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+> -s $PWD/workflow/snakefile
+Job <221719> is submitted to queue <general>.
+```
 
+Modified `/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/workflow/scripts/hail_jointCalling.py`
 
+```python
+import os
+import time
+import pyspark
+import hail as hl
+
+start_time = time.time()
+
+# Set JAVA HOME
+os.environ['JAVA_HOME'] = "/opt/conda"
+os.environ['SPARK_HOME'] = "/opt/conda/lib/python3.7/site-packages/pyspark"
+os.environ['HAIL_HOME'] = "/opt/conda/lib/python3.7/site-packages/hail"
+
+threads = snakemake.threads - 2
+memory = snakemake.params.spark_mem
+hail_jars = "/opt/conda/lib/python3.7/site-packages/hail/backend/hail-all-spark.jar"
+conf = pyspark.SparkConf().setAll([
+    ('spark.master', 'local[{}]'.format(threads)),
+    ('spark.app.name', 'Hail'),
+    ('spark.jars', str(hail_jars)),
+    ('spark.driver.extraClassPath', str(hail_jars)),
+    ('spark.executor.extraClassPath', './hail-all-spark.jar'),
+    ('spark.serializer', 'org.apache.spark.serializer.KryoSerializer'),
+    ('spark.kryo.registrator', 'is.hail.kryo.HailKryoRegistrator'),
+    ### https://discuss.hail.is/t/turning-run-combiner-performance-for-hail-local-mode/2318
+    ('spark.driver.memory', str(memory)),
+    ('spark.executor.memory', str(memory)),
+    ])
+
+### Using sc:
+sc = pyspark.SparkContext(conf=conf)
+hl.init(default_reference='GRCh38',sc=sc)
+
+### Input: (list of files)
+inputs = snakemake.input.gvcf_bgz
+### Output:
+temp_folder = str(snakemake.params.output_temp)
+#if os.path.exists(temp_folder) and os.path.isdir(temp_folder):
+#    os.system("rm -rf {}".format(temp_folder)):
+os.makedirs(temp_folder, mode=777, exist_ok=True)
+output_mt = snakemake.output
+
+hl.experimental.run_combiner(inputs, 
+                             use_genome_default_intervals=True,
+                             out_file=output_mt, 
+                             tmp_path=temp_folder,
+                             overwrite=True,
+                             reference_genome='GRCh38')
+
+processing_time_in_seconds = time.time() - start_time
+print("--- %s minute ---" % (processing_time_in_seconds/60))
 ```
 
 
