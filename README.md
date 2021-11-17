@@ -164,6 +164,23 @@ Job counts:
 	24	hail_run_combiner
 	25
 
+
+// ERROR logs: **/opt/ibm/jre/bin/java: No such file or directory**
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ less logs/hail_run_combiner_err.txt 
+...
+/opt/conda/bin/python /storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/.snakemake/scripts/tmpa441sjb8.hail_jointCalling.py
+/opt/conda/lib/python3.7/site-packages/pyspark/bin/spark-class: line 71: /opt/ibm/jre/bin/java: No such file or directory
+Traceback (most recent call last):
+  File "/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/.snakemake/scripts/tmpa441sjb8.hail_jointCalling.py", line 29, in <module>
+    sc = pyspark.SparkContext(conf=conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/context.py", line 115, in __init__
+    SparkContext._ensure_initialized(self, gateway=gateway, conf=conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/context.py", line 298, in _ensure_initialized
+    SparkContext._gateway = gateway or launch_gateway(conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/java_gateway.py", line 94, in launch_gateway
+    raise Exception("Java gateway process exited before sending its port number")
+Exception: Java gateway process exited before sending its port number
+...
 ```
 
 #### Test submit jobs for chr1
