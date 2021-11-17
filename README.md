@@ -58,14 +58,199 @@ snakemake --use-conda -j 50 \
 }
 ```
 
+--------------------------------------
 
 ### Detail:
 
 #### Outline:
 
+* [Submit ALL hail_run_combiner - 2nd](#Submit-ALL-hail_run_combiner)
+* [Submit ALL chromosome - 1st fail at hail_run_combiner](#Submit-ALL-chromosome)
 * [Test submit jobs for chr1](#test-submit-jobs-for-chr1)
 * [How to BGZ a GVCF file and TABIX the file](#how-to-bgz-a-gvcf-file-and-tabix-the-file)
 * [How to run Hail Joint-Calling using BASH and BSUB](#how-to-run-hail-joint-calling-using-bash-and-bsub)
+
+#### Submit ALL hail_run_combiner:
+
+> 2nd
+> 
+> Date: 2021/11/17
+> 
+> PID: 221719
+
+* Sent out jobs:
+
+NEED to run at `/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake` folder.
+
+```
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
+> -J hail_jointcall -N -u fup@wustl.edu \
+> -R 'affinity[core(5)] span[ptile=6] rusage[mem=25GB]' \
+> -oo master_out.txt -eo master_err.txt \
+> -g /fup/jobGroup_2_snakemake \
+> -a 'docker(spashleyfu/ubuntu20_snakemake:bamMetrics)' \
+> snakemake --use-conda -j 10 \
+> --printshellcmds --show-failed-logs \
+> --cluster-config $PWD/config/cluster.json \
+> --cluster "bsub -q general -G compute-jin810 -Ne -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+> -s $PWD/workflow/snakefile
+Job <221719> is submitted to queue <general>.
+```
+
+Modified `/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/workflow/scripts/hail_jointCalling.py`
+
+```python
+import os
+import time
+import pyspark
+import hail as hl
+
+start_time = time.time()
+
+# Set JAVA HOME
+os.environ['JAVA_HOME'] = "/opt/conda"
+os.environ['SPARK_HOME'] = "/opt/conda/lib/python3.7/site-packages/pyspark"
+os.environ['HAIL_HOME'] = "/opt/conda/lib/python3.7/site-packages/hail"
+
+threads = snakemake.threads - 2
+memory = snakemake.params.spark_mem
+hail_jars = "/opt/conda/lib/python3.7/site-packages/hail/backend/hail-all-spark.jar"
+conf = pyspark.SparkConf().setAll([
+    ('spark.master', 'local[{}]'.format(threads)),
+    ('spark.app.name', 'Hail'),
+    ('spark.jars', str(hail_jars)),
+    ('spark.driver.extraClassPath', str(hail_jars)),
+    ('spark.executor.extraClassPath', './hail-all-spark.jar'),
+    ('spark.serializer', 'org.apache.spark.serializer.KryoSerializer'),
+    ('spark.kryo.registrator', 'is.hail.kryo.HailKryoRegistrator'),
+    ### https://discuss.hail.is/t/turning-run-combiner-performance-for-hail-local-mode/2318
+    ('spark.driver.memory', str(memory)),
+    ('spark.executor.memory', str(memory)),
+    ])
+
+### Using sc:
+sc = pyspark.SparkContext(conf=conf)
+hl.init(default_reference='GRCh38',sc=sc)
+
+### Input: (list of files)
+inputs = snakemake.input.gvcf_bgz
+### Output:
+temp_folder = str(snakemake.params.output_temp)
+#if os.path.exists(temp_folder) and os.path.isdir(temp_folder):
+#    os.system("rm -rf {}".format(temp_folder)):
+os.makedirs(temp_folder, mode=777, exist_ok=True)
+output_mt = snakemake.output
+
+hl.experimental.run_combiner(inputs, 
+                             use_genome_default_intervals=True,
+                             out_file=output_mt, 
+                             tmp_path=temp_folder,
+                             overwrite=True,
+                             reference_genome='GRCh38')
+
+processing_time_in_seconds = time.time() - start_time
+print("--- %s minute ---" % (processing_time_in_seconds/60))
+```
+
+
+#### Submit ALL chromosome:
+
+> 1st
+> 
+> Date: 2021/11/10
+> 
+> PID: 951945
+
+```
+// dry run
+(base) fup@compute1-exec-135:/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake$ snakemake -n
+...
+Job counts:
+	count	jobs
+	1	all
+	8419	generate_tabix
+	8418	gvcf2gvcfbgz
+	24	hail_run_combiner
+	16862
+
+
+// SUBMIT
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ bsub -q general -G compute-jin810 \
+> -J hail_jointcall -N -u fup@wustl.edu \
+> -R 'affinity[core(5)] span[ptile=6] rusage[mem=25GB]' \
+> -oo master_out.txt -eo master_err.txt \
+> -g /fup/jobGroup_2_snakemake \
+> -a 'docker(spashleyfu/ubuntu20_snakemake:bamMetrics)' \
+> snakemake --use-conda -j 50 \
+> --printshellcmds --show-failed-logs \
+> --cluster-config $PWD/config/cluster.json \
+> --cluster "bsub -q general -G compute-jin810 -Ne -o {cluster.log} -e {cluster.err} -M {cluster.mem} -n {cluster.core} -R {cluster.resources} -g {cluster.jobgroup} -a 'docker({cluster.image})'" \
+> -s $PWD/workflow/snakefile
+Job <951945> is submitted to queue <general>.
+```
+
+#### check result - failed at "hail_run_combiner" step
+
+```
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ for i in {1..22}; do bgz=$(ls ../snakemake_results/subsetGvcf/chr$i/TWHJ-PNRR-10*.bgz | wc -l);tbi=$(ls ../snakemake_results/subsetGvcf/chr$i/TWHJ-PNRR-10*.bgz.tbi | wc -l); echo "chr$i has $bgz BGZ recodes, and $tbi TBI recodes"; done
+chr1 has 366 BGZ recodes, and 366 TBI recodes
+chr2 has 366 BGZ recodes, and 366 TBI recodes
+chr3 has 366 BGZ recodes, and 366 TBI recodes
+chr4 has 366 BGZ recodes, and 366 TBI recodes
+chr5 has 366 BGZ recodes, and 366 TBI recodes
+chr6 has 366 BGZ recodes, and 366 TBI recodes
+chr7 has 366 BGZ recodes, and 366 TBI recodes
+chr8 has 366 BGZ recodes, and 366 TBI recodes
+chr9 has 366 BGZ recodes, and 366 TBI recodes
+chr10 has 366 BGZ recodes, and 366 TBI recodes
+chr11 has 366 BGZ recodes, and 366 TBI recodes
+chr12 has 366 BGZ recodes, and 366 TBI recodes
+chr13 has 366 BGZ recodes, and 366 TBI recodes
+chr14 has 366 BGZ recodes, and 366 TBI recodes
+chr15 has 366 BGZ recodes, and 366 TBI recodes
+chr16 has 366 BGZ recodes, and 366 TBI recodes
+chr17 has 366 BGZ recodes, and 366 TBI recodes
+chr18 has 366 BGZ recodes, and 366 TBI recodes
+chr19 has 366 BGZ recodes, and 366 TBI recodes
+chr20 has 366 BGZ recodes, and 366 TBI recodes
+chr21 has 366 BGZ recodes, and 366 TBI recodes
+chr22 has 366 BGZ recodes, and 366 TBI recodes
+
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrX/TWHJ-PNRR-10*.bgz | wc -l
+366
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrX/TWHJ-PNRR-10*.bgz.tbi | wc -l
+366
+
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrY/TWHJ-PNRR-10*.bgz | wc -l
+366
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ ls ../snakemake_results/subsetGvcf/chrY/TWHJ-PNRR-10*.bgz.tbi | wc -l
+366
+
+// check dry run again:
+Job counts:
+	count	jobs
+	1	all
+	24	hail_run_combiner
+	25
+
+
+// ERROR logs: **/opt/ibm/jre/bin/java: No such file or directory**
+[fup@compute1-client-3 JinLab_Hail_jointCalling_Pipeline_usingSnakemake]$ less logs/hail_run_combiner_err.txt 
+...
+/opt/conda/bin/python /storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/.snakemake/scripts/tmpa441sjb8.hail_jointCalling.py
+/opt/conda/lib/python3.7/site-packages/pyspark/bin/spark-class: line 71: /opt/ibm/jre/bin/java: No such file or directory
+Traceback (most recent call last):
+  File "/storage1/fs1/jin810/Active/Neuropathy_WGS_2021May/JinLab_Hail_jointCalling_Pipeline_usingSnakemake/.snakemake/scripts/tmpa441sjb8.hail_jointCalling.py", line 29, in <module>
+    sc = pyspark.SparkContext(conf=conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/context.py", line 115, in __init__
+    SparkContext._ensure_initialized(self, gateway=gateway, conf=conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/context.py", line 298, in _ensure_initialized
+    SparkContext._gateway = gateway or launch_gateway(conf)
+  File "/opt/conda/lib/python3.7/site-packages/pyspark/java_gateway.py", line 94, in launch_gateway
+    raise Exception("Java gateway process exited before sending its port number")
+Exception: Java gateway process exited before sending its port number
+...
+```
 
 #### Test submit jobs for chr1
 
